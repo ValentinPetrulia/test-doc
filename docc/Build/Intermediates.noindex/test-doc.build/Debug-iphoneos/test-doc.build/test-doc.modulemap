@@ -1,4 +1,0 @@
-module test_doc {
-header "test-doc-Swift.h"
-export *
-}
