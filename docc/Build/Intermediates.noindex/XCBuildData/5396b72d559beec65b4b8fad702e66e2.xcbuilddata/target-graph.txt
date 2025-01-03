@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'test-doc' in project 'test-doc'
+➜ Explicit dependency on target 'test-doc' in project 'test-doc'
+Target 'test-doc' in project 'test-doc' (no dependencies)
