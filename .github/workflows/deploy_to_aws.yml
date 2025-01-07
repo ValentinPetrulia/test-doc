@@ -43,4 +43,4 @@ jobs:
           aws amplify start-deployment \
             --app-id ${{ secrets.AMPLIFY_APP_ID }} \
             --branch-name aws \
-            --source ./docs
+            --source-url ./docs
