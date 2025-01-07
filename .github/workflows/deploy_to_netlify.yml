@@ -1,0 +1,39 @@
+name: Deploy DocC to Netlify
+
+on:
+  push:
+    branches: ["netlify"]  # Запуск при пушах у гілку "main"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: macos-latest  # Потрібно для використання Xcode
+
+    steps:
+      # Завантажуємо код із репозиторію
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Генеруємо .doccarchive та статичний вебсайт
+      - name: Build DocC and Generate Static Site
+        run: |
+          xcodebuild docbuild -scheme test-doc \
+            -derivedDataPath /tmp/docbuild \
+            -destination 'generic/platform=iOS';
+
+          $(xcrun --find docc) process-archive transform-for-static-hosting \
+            /tmp/docbuild/Build/Products/Debug-iphoneos/test-doc.doccarchive \
+            --output-path docs \
+
+      # Встановлюємо Netlify CLI
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      # Розгортаємо документацію на Netlify
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: netlify deploy --dir=docs --prod
