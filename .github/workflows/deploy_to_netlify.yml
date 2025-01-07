@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   deploy:
-    runs-on: macos-latest  # Потрібно для використання Xcode
+    runs-on: macos-15  # Потрібно для використання Xcode
 
     steps:
       # Завантажуємо код із репозиторію
