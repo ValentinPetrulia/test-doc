@@ -1,0 +1,46 @@
+name: Deploy DocC to Netlify
+
+on:
+  push:
+    branches: ["aws"]  # Запуск при пушах у гілку "main"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: macos-15  # Потрібно для використання Xcode
+
+    steps:
+      # Завантажуємо код із репозиторію
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Генеруємо .doccarchive та статичний вебсайт
+      - name: Build DocC and Generate Static Site
+        run: |
+          xcodebuild docbuild -scheme test-doc \
+            -derivedDataPath /tmp/docbuild \
+            -destination 'generic/platform=iOS';
+
+          $(xcrun --find docc) process-archive transform-for-static-hosting \
+            /tmp/docbuild/Build/Products/Debug-iphoneos/test-doc.doccarchive \
+            --output-path docs \
+
+      # Встановлення AWS CLI
+      - name: Configure AWS CLI
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region us-east-1
+
+      # Завантаження файлів на AWS Amplify
+      - name: Deploy to AWS Amplify
+        run: |
+          aws amplify start-deployment \
+            --app-id ${{ secrets.AMPLIFY_APP_ID }} \
+            --branch-name aws \
+            --source ./docs
