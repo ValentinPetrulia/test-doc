@@ -21,7 +21,7 @@ jobs:
       - name: Build DocC documentation
         run: |
           xcodebuild docbuild -scheme YourProject -destination generic/platform=iOS
-          docc process-archive transform-for-static-hosting DerivedData/YourProject/Build/Products/Debug-iphoneos/YourProject.doccarchive --output-path docs --hosting-base-path documentation
+          docc process-archive transform-for-static-hosting DerivedData/YourProject/Build/Products/Debug-iphoneos/test-doc.doccarchive --output-path docs
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
