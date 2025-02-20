@@ -5,7 +5,6 @@
 //  Created by Valentin Petrulia on 03.01.2025.
 //
 
-
 /// A representation of a product in the catalog.
 public struct Product {
     /// The unique identifier for the product.
