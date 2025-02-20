@@ -33,4 +33,4 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Load to S3
-        run: aws s3 sync docs s3://${{ secrets.AWS_S3_BUCKET }}/documentation --acl public-read --delete
+        run: aws s3 sync docs s3://${{ secrets.AWS_S3_BUCKET }} --acl public-read --delete
