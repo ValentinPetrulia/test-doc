@@ -18,10 +18,15 @@ jobs:
       - name: Setup Xcode and DocC
         run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 
-      - name: Build DocC documentation
+    - name: Build DocC and Generate Static Site
         run: |
-          xcodebuild docbuild -scheme test-doc -destination generic/platform=iOS
-          docc process-archive transform-for-static-hosting DerivedData/YourProject/Build/Products/Debug-iphoneos/test-doc.doccarchive --output-path docs
+          xcodebuild docbuild -scheme test-doc \
+            -derivedDataPath /tmp/docbuild \
+            -destination 'generic/platform=iOS';
+
+          $(xcrun --find docc) process-archive transform-for-static-hosting \
+            /tmp/docbuild/Build/Products/Debug-iphoneos/test-doc.doccarchive \
+            --output-path docs \
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
